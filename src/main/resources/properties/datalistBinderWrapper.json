@@ -1,0 +1,36 @@
+[{
+   "title" : "@@org.joget.marketplace.DatalistBinderWrapper.title@@",
+   "properties" : [
+      {
+         "name":   "datalistBinder",
+         "label":"@@org.joget.marketplace.DatalistBinderWrapper.listBinder@@",
+         "type":"elementselect",
+         "options_ajax":"[CONTEXT_PATH]/web/property/json/getElements?classname=org.joget.apps.datalist.model.DataListBinderDefault",
+         "url":"[CONTEXT_PATH]/web/property/json[APP_PATH]/getPropertyOptions",
+         "default_property_values_url": "[CONTEXT_PATH]/web/property/json[APP_PATH]/getDefaultProperties",
+         "required" : "True"
+     },
+     {
+         "name": "script",
+         "label": "@@org.joget.marketplace.DatalistBinderWrapper.script@@",
+         "description": "@@org.joget.marketplace.DatalistBinderWrapper.script.desc@@",
+         "type": "codeeditor",
+         "mode": "java",
+         "value": "import org.joget.apps.form.model.FormRow;\nimport org.joget.apps.form.model.FormRowSet;\n\nFormRow row = rows.get(0);\nrow.put(\"field1\", row.get(\"field1\") + \" added\");\n\nreturn rows;",
+         "required" : "True",
+         "value" : "import java.util.Iterator;\nimport java.util.Map;\nimport org.joget.apps.datalist.model.DataListColumn;\nimport org.joget.apps.form.model.FormRow;\nimport org.joget.apps.form.model.FormRowSet;\nimport org.joget.commons.util.LogUtil;\n\nint counter = 0;\nfor (Iterator i= data.iterator(); i.hasNext();) {\n  counter++;\n  Map row = (Map)i.next();\n  \tfor (int j=0; j<columns.length; j++) {\n      DataListColumn column = columns[j];\n      String columnName = column.getName();\n      try{\n        String value = (String) row.get(columnName);\n        //LogUtil.info(\"row \" + counter, columnName + \" :: \" + value);\n        if(columnName.equals(\"Name\") && value != null && !value.isEmpty()){\n          //LogUtil.info(\"row \" + counter, value);\n          row.setProperty(columnName, value + \" world\");\n        }\n      }catch(Exception ex){\n        //ignore\n      }\n\t}\n}\n\nreturn data;"
+      },
+      {
+         "name":"debugMode",
+         "label":"@@app.jsontool.debugMode@@",
+         "description":"@@app.jsontool.debugMode.desc@@",
+         "type":"checkbox",
+         "options":[
+            {
+               "value":"true",
+               "label":""
+            }
+         ]
+      }
+   ]
+}]

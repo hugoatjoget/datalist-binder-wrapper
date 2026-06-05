@@ -1,6 +1,6 @@
 # Description
 
-This repository is meant to serve as a general template for how to set up new repositories in the JogetOSS organization. 
+The Datalist Binder Wrapper allows manipulation of returned data from the actual list binder.
 
 # Getting Help
 

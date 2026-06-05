@@ -1,8 +1,6 @@
 package org.joget.marketplace;
 
-import bsh.Interpreter;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.service.AppPluginUtil;
@@ -13,25 +11,11 @@ import org.joget.apps.datalist.model.DataListBinderDefault;
 import org.joget.apps.datalist.model.DataListCollection;
 import org.joget.apps.datalist.model.DataListColumn;
 import org.joget.apps.datalist.model.DataListFilterQueryObject;
-import org.joget.apps.form.lib.DefaultFormBinder;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormBinder;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormDataDeletableBinder;
-import org.joget.apps.form.model.FormLoadBinder;
-import org.joget.apps.form.model.FormLoadElementBinder;
-import org.joget.apps.form.model.FormRow;
-import org.joget.apps.form.model.FormRowSet;
-import org.joget.apps.form.model.FormStoreElementBinder;
-import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
-import org.joget.plugin.base.ApplicationPlugin;
 import org.joget.plugin.base.Plugin;
 import org.joget.plugin.base.PluginManager;
 import org.joget.plugin.property.model.PropertyEditable;
 import org.joget.workflow.model.service.WorkflowManager;
-import org.joget.workflow.util.WorkflowUtil;
 
 public class DatalistBinderWrapper extends DataListBinderDefault{
     private static String MESSAGE_PATH = "messages/datalistBinderWrapper";
@@ -43,7 +27,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
 
     @Override
     public String getVersion() {
-        return "8.0.0";
+        return "8.0.1";
     }
 
     @Override
@@ -70,59 +54,14 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
     protected Object executeScript(String script, Map properties) {
         Object result = null;
         try {
-            Interpreter interpreter = new Interpreter();
-            interpreter.setClassLoader(getClass().getClassLoader());
-            for (Object key : properties.keySet()) {
-                interpreter.set(key.toString(), properties.get(key));
-            }
             LogUtil.debug(getClass().getName(), "Executing script " + script);
-            result = interpreter.eval(script);
+            result = AppPluginUtil.executeScript(script, properties);
             return result;
         } catch (Exception e) {
             LogUtil.error(getClass().getName(), e, "Error executing script");
             return null;
         }
     }
-//
-//    @Override
-//    public FormRowSet store(Element element, FormRowSet rows, FormData formData) {
-//        FormRowSet result = rows;
-//        if (rows != null && !rows.isEmpty()) {
-//            // store form data to DB
-//            result = super.store(element, rows, formData);
-//
-//            // handle workflow variables
-//            if (!rows.isMultiRow()) {
-//                String activityId = formData.getActivityId();
-//                String processId = formData.getProcessId();
-//                if (activityId != null || processId != null) {
-//                    WorkflowManager workflowManager = (WorkflowManager) WorkflowUtil.getApplicationContext().getBean("workflowManager");
-//
-//                    // recursively find element(s) mapped to workflow variable
-//                    FormRow row = rows.iterator().next();
-//                    Map<String, String> variableMap = new HashMap<String, String>();
-//                    variableMap = storeWorkflowVariables(element, row, variableMap);
-//
-//                    if (activityId != null) {
-//                        workflowManager.activityVariables(activityId, variableMap);
-//                    } else {
-//                        workflowManager.processVariables(processId, variableMap);
-//                    }
-//                }
-//            }
-//        }
-//        return result;
-//    }
-//
-//    public String getFormId() {
-//        Form form = FormUtil.findRootForm(getElement());
-//        return form.getPropertyString(FormUtil.PROPERTY_ID);
-//    }
-//
-//    public String getTableName() {
-//        Form form = FormUtil.findRootForm(getElement());
-//        return form.getPropertyString(FormUtil.PROPERTY_TABLE_NAME);
-//    }
 
     @Override
     public String getClassName() {
@@ -201,7 +140,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
             if (fvMap != null && fvMap.containsKey("className") && !fvMap.get("className").toString().isEmpty()) {
                 String className = fvMap.get("className").toString();
                 DataListBinderDefault datalistBinderPlugin = (DataListBinderDefault)pluginManager.getPlugin(className);
-
+                
                 //obtain plugin defaults
                 Map propertiesMap = new HashMap();
                 propertiesMap.putAll(AppPluginUtil.getDefaultProperties((Plugin) datalistBinderPlugin, (Map) fvMap.get("properties"), null, null));

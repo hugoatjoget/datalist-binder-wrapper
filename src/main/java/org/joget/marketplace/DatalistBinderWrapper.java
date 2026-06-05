@@ -149,7 +149,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
                     ((PropertyEditable) datalistBinderPlugin).setProperties(propertiesMap);
                 }
 
-                DataListCollection data = datalistBinderPlugin.getData(dl, map, dlfqos, string, bln, intgr, intgr1);
+                DataListCollection data = datalistBinderPlugin.getData(dl, propertiesMap, dlfqos, string, bln, intgr, intgr1);
                 
                 Map scriptProperties = new HashMap();
                 scriptProperties.put("data", data);
@@ -198,7 +198,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
                     ((PropertyEditable) datalistBinderPlugin).setProperties(propertiesMap);
                 }
 
-                return datalistBinderPlugin.getDataTotalRowCount(dl, map, dlfqos);
+                return datalistBinderPlugin.getDataTotalRowCount(dl, propertiesMap, dlfqos);
             }
         }
         return 0;

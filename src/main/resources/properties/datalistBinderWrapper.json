@@ -31,6 +31,18 @@
                "label":""
             }
          ]
+      },
+      {
+         "name":"useFormattedDataCount",
+         "label":"@@org.joget.marketplace.DatalistBinderWrapper.useFormattedDataCount@@",
+         "description":"@@org.joget.marketplace.DatalistBinderWrapper.useFormattedDataCount.desc@@",
+         "type":"checkbox",
+         "options":[
+            {
+               "value":"true",
+               "label":""
+            }
+         ]
       }
    ]
 }]

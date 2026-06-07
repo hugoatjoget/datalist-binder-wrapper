@@ -19,6 +19,7 @@ import org.joget.workflow.model.service.WorkflowManager;
 
 public class DatalistBinderWrapper extends DataListBinderDefault{
     private static String MESSAGE_PATH = "messages/datalistBinderWrapper";
+    private DataListCollection formattedData;
     
     @Override
     public String getName() {
@@ -27,7 +28,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
 
     @Override
     public String getVersion() {
-        return "8.0.1";
+        return "8.0.2";
     }
 
     @Override
@@ -163,7 +164,7 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
                 String script = (String) binderProps.get("script");
 
                 //script = WorkflowUtil.processVariable(script, "", wfAssignment, "", replaceMap);
-                DataListCollection formattedData = (DataListCollection) executeScript(script, scriptProperties);
+                formattedData = (DataListCollection) executeScript(script, scriptProperties);
 
                 if ("true".equalsIgnoreCase(getPropertyString("debugMode"))) {
                     LogUtil.info(DatalistBinderWrapper.class.getName(), "Data after script: " + formattedData);
@@ -177,6 +178,13 @@ public class DatalistBinderWrapper extends DataListBinderDefault{
 
     @Override
     public int getDataTotalRowCount(DataList dl, Map map, DataListFilterQueryObject[] dlfqos) {
+        if ("true".equalsIgnoreCase(getPropertyString("useFormattedDataCount"))) {
+            if (formattedData == null) {
+                formattedData = getData(dl, map, dlfqos, null, true, null, null);
+            }
+            return formattedData != null ? formattedData.size() : 0;
+        }
+
         PluginManager pluginManager = (PluginManager) AppUtil.getApplicationContext().getBean("pluginManager");
         WorkflowManager workflowManager = (WorkflowManager) AppUtil.getApplicationContext().getBean("workflowManager");
         AppService appService = (AppService) AppUtil.getApplicationContext().getBean("appService");
